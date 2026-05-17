@@ -1,22 +1,21 @@
-// =============================================
+
 // STEP 1: BACKGROUND
 // Sky + Grass + Road + Road Markings
-// =============================================
+
 
 #include <windows.h>
 #include <GL/glut.h>
 #include <math.h>
-#include <mmsystem.h>      // For audio playback
-#include <MMSystem.h>      // Additional audio support
-#pragma comment(lib, "winmm.lib")  // Link the Windows multimedia library
+
+
 
 #define PI 3.1416f
-// ========== TRANSFORMATION VARIABLES ==========
+//TRANSFORMATION VARIABLES 
 //GLfloat carX     = 0.0f;
     // car translation
 
 
-// ========== CAR POSITIONS (each car moves separately) ==========
+// CAR POSITIONS (each car moves separately)
 GLfloat car1X = -0.10f;    // red sedan starts from far left
 GLfloat car2X = -0.55f;    // blue SUV starts from far left
 GLfloat car3X = -0.90f;    // yellow sports starts from far left
@@ -27,17 +26,14 @@ GLfloat scale    = 1.0f;     // cloud zoom in/out
 int     zoom     = 1;        // zoom direction
 int     animFlag = 0;        // 0=stopped, 1=running
 GLfloat timeOfDay = 6.0f;
-GLfloat queueShift = 0.0f;    // ⭐ start at 6 AM (sunrise)
+GLfloat queueShift = 0.0f;    // start at 6 AM (sunrise)
 float lampPulse = 0.0f;
 int lampPulseDir = 1;
 GLfloat laneUpper = 0.07f;
 GLfloat laneMiddle = 0.00f;
 GLfloat laneLower = -0.08f;
 // ========== AUDIO VARIABLES ==========
-bool audioPlaying = false;     // Track if audio is currently playing
-bool engineStarted = false;    // Track engine sound state
-float engineVolume = 0.5f;     // Engine volume level
-
+ 
 
 
 void drawText(float x, float y, char text[]) {
@@ -49,40 +45,6 @@ void drawText(float x, float y, char text[]) {
 
 
 
-// ========== AUDIO FUNCTIONS ==========
-void playBackgroundMusic() {
-    // Play background music (WAV file)
-    // Place "background.wav" in your project folder
-    PlaySound(TEXT("engine_sound.wav"), NULL, SND_ASYNC | SND_LOOP);
-    audioPlaying = true;
-}
-
-void stopBackgroundMusic() {
-    PlaySound(NULL, NULL, 0);
-    audioPlaying = false;
-}
-
-void playEngineSound() {
-    // Play engine sound looped
-    PlaySound(TEXT("engine_sound.wav"), NULL, SND_ASYNC | SND_LOOP);
-    engineStarted = true;
-}
-
-void stopEngineSound() {
-    if(engineStarted) {
-        PlaySound(NULL, NULL, 0);
-        engineStarted = false;
-    }
-}
-
-void playCarPassSound() {
-    // Play short sound when car passes
-    PlaySound(TEXT("car_pass.wav"), NULL, SND_ASYNC);
-}
-
-void playHornSound() {
-    PlaySound(TEXT("horn.wav"), NULL, SND_ASYNC);
-}
 
 
 
@@ -118,31 +80,12 @@ void CC(GLfloat cx, GLfloat cy, GLfloat r, GLfloat red, GLfloat green, GLfloat b
  // ========== KEYBOARD ==========
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
-    case 'r':              // ⭐ START animation
+    case 'r':              //  START animation
         animFlag = 1;
         break;
-    case 'q':              // ⭐ STOP animation
+    case 'q':              //  STOP animation
         animFlag = 0;
         break;
-
-
-
-
-    case 'h':              // HORN
-        playHornSound();
-        break;
-    case 'm':              // Mute/Unmute music
-        if(audioPlaying) {
-            stopBackgroundMusic();
-            stopEngineSound();
-        } else {
-            playBackgroundMusic();
-            if(animFlag == 1) playEngineSound();
-        }
-        break;
-
-
-
     }
     glutPostRedisplay();
 }
@@ -152,7 +95,7 @@ void update(int value) {
     if(animFlag == 1) {
         // 1) Cars on road
         //if(animFlag == 1) {
-        // ⭐ Each car has its OWN speed
+        // Each car has its OWN speed
       // cars using different road lanes
 car1X = car1X + 0.005f;     // upper lane
 car2X = car2X + 0.007f;     // lower lane
@@ -189,7 +132,7 @@ if(car5X >= 1.5f) car5X = -1.90f;
         timeOfDay = timeOfDay + 0.02f;
         if(timeOfDay >= 24.0f) timeOfDay = 0.0f;
 
-        // 5) ⭐ QUEUE shifts slowly forward
+        // 5) QUEUE shifts slowly forward
         queueShift = queueShift + 0.0001f;
         if(queueShift >= 0.18f)
             queueShift = 0.0f;
@@ -228,7 +171,7 @@ else {
 
 
 void display() {
-    // ========== ALL VARIABLES AT TOP ==========
+    //  ALL VARIABLES AT TOP 
     int i;
     int tringle2 = 40;
     GLfloat tp2 = 2.0f * PI;
@@ -243,7 +186,7 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT);
      glLoadIdentity();
 
-    // ========== SKY (light blue) ==========
+    //  SKY (light blue) 
     glColor3f(0.30f, 0.70f, 1.0f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f,  0.0f);
@@ -252,7 +195,7 @@ void display() {
         glVertex2f(-1.0f,  1.0f);
     glEnd();
 
-    // ========== GRASS top (green strip) ==========
+    // GRASS top (green strip) 
     glColor3f(0.40f, 0.78f, 0.30f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f, -0.50f);
@@ -261,7 +204,7 @@ void display() {
         glVertex2f(-1.0f,  0.0f);
     glEnd();
 
-    // ========== ROAD (dark grey) ==========
+    // ROAD (dark grey) 
     glColor3f(0.20f, 0.20f, 0.22f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f, -0.85f);
@@ -270,7 +213,7 @@ void display() {
         glVertex2f(-1.0f, -0.50f);
     glEnd();
 
-    // ========== GRASS bottom (green) ==========
+    //  GRASS bottom (green) 
     glColor3f(0.40f, 0.78f, 0.30f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f, -1.0f);
@@ -279,7 +222,7 @@ void display() {
         glVertex2f(-1.0f, -0.92f);
     glEnd();
 
-    // ========== Footpath strip (grey, between road and grass) ==========
+    //  Footpath strip (grey, between road and grass) 
     glColor3f(0.62f, 0.62f, 0.62f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f, -0.92f);
@@ -288,7 +231,7 @@ void display() {
         glVertex2f(-1.0f, -0.85f);
     glEnd();
 
-    // ========== ROAD MARKINGS (yellow dashes) ==========
+    //  ROAD MARKINGS (yellow dashes) 
     glColor3f(1.0f, 0.85f, 0.0f);
     for(dashX = -0.95f; dashX < 1.0f; dashX += 0.20f) {
         glBegin(GL_POLYGON);
@@ -309,7 +252,7 @@ void display() {
 
 
 
-    // ========== SKY (changes by time of day) ==========
+    //  SKY (changes by time of day) 
     GLfloat skyR, skyG, skyB;
 
     if(timeOfDay < 5.0f) {
@@ -339,7 +282,8 @@ void display() {
         glVertex2f(1.0f, 1.0f);  glVertex2f(-1.0f, 1.0f);
     glEnd();
 
-    // ========== SUN (only during day, follows arc) ==========
+    // SUN (only during day, follows arc)
+
     if(timeOfDay >= 5.0f && timeOfDay <= 19.0f) {
         // sun moves in arc from left to right
         GLfloat sunPos = (timeOfDay - 5.0f) / 14.0f;   // 0 to 1
@@ -361,7 +305,7 @@ void display() {
         glEnd();
     }
 
-    // ========== MOON (only at night, follows arc) ==========
+    //  MOON (only at night, follows arc) 
     if(timeOfDay < 5.0f || timeOfDay > 19.0f) {
         GLfloat moonT;
         if(timeOfDay < 5.0f)
@@ -395,7 +339,9 @@ void display() {
         glPointSize(1.0f);
     }
 
-    // ========== CLOUDS ==========
+    // CLOUDS 
+
+    
     glColor3f(1.0f, 1.0f, 1.0f);
     r = 0.06f;
     cy = 0.82f;
@@ -433,19 +379,18 @@ void display() {
     glBegin(GL_TRIANGLE_FAN); glVertex2f(cx,cy);
     for(i=0;i<=tringle2;i++) glVertex2f(cx+r*cos(i*tp2/tringle2),cy+r*sin(i*tp2/tringle2)); glEnd();
 
+
+
+
+
+
+    
     // ========== BUILDINGS (city skyline) ==========
-   // =====================================================
-// CLEANER CITY BUILDINGS - Bangladesh style variation
-// Put this after clouds and before grass
-// =========================================================
-// MORE REALISTIC & DETAILED BANGLADESH CITY BUILDINGS
-// Paste after clouds and before grass
-// =========================================================
 
 
-// =========================================================
+
 // BUILDING 1 : LEFT APARTMENT
-// =========================================================
+
 glColor3f(0.76f, 0.69f, 0.54f);
 glBegin(GL_POLYGON);
     glVertex2f(-1.00f, 0.00f);
@@ -508,9 +453,8 @@ glBegin(GL_POLYGON);
 glEnd();
 
 
-// =========================================================
 // BUILDING 2 : TALL CITY BUILDING
-// =========================================================
+
 glColor3f(0.63f, 0.66f, 0.71f);
 glBegin(GL_POLYGON);
     glVertex2f(-0.84f, 0.00f);
@@ -579,9 +523,8 @@ glBegin(GL_POLYGON); glVertex2f(-0.82f,0.08f); glVertex2f(-0.79f,0.08f); glVerte
 glBegin(GL_POLYGON); glVertex2f(-0.77f,0.08f); glVertex2f(-0.74f,0.08f); glVertex2f(-0.74f,0.14f); glVertex2f(-0.77f,0.14f); glEnd();
 
 
-// =========================================================
+
 // BUILDING 3 : UNDER-CONSTRUCTION BUILDING
-// =========================================================
 glColor3f(0.82f, 0.76f, 0.60f);
 glBegin(GL_POLYGON);
     glVertex2f(-0.66f, 0.00f);
@@ -627,9 +570,11 @@ glBegin(GL_POLYGON); glVertex2f(-0.63f,0.14f); glVertex2f(-0.60f,0.14f); glVerte
 glBegin(GL_POLYGON); glVertex2f(-0.57f,0.14f); glVertex2f(-0.54f,0.14f); glVertex2f(-0.54f,0.19f); glVertex2f(-0.57f,0.19f); glEnd();
 
 
-// =========================================================
+
+
+    
 // BUILDING 4 : BLUE GLASS OFFICE
-// =========================================================
+
 glColor3f(0.38f, 0.52f, 0.68f);
 glBegin(GL_POLYGON);
     glVertex2f(-0.47f, 0.00f);
@@ -683,9 +628,8 @@ glBegin(GL_POLYGON); glVertex2f(-0.45f,0.12f); glVertex2f(-0.42f,0.12f); glVerte
 glBegin(GL_POLYGON); glVertex2f(-0.40f,0.12f); glVertex2f(-0.37f,0.12f); glVertex2f(-0.37f,0.18f); glVertex2f(-0.40f,0.18f); glEnd();
 
 
-// =========================================================
 // BUILDING 5 : SMALL SHOP / MIXED BUILDING
-// =========================================================
+
 glColor3f(0.66f, 0.54f, 0.44f);
 glBegin(GL_POLYGON);
     glVertex2f(-0.26f, 0.00f);
@@ -730,9 +674,10 @@ glBegin(GL_POLYGON);
 glEnd();
 
 
-// =========================================================
+ ===
 // BUILDING 6 : MID-RIGHT APARTMENT
-// =========================================================
+
+    
 glColor3f(0.72f, 0.66f, 0.54f);
 glBegin(GL_POLYGON);
     glVertex2f(0.12f, 0.00f);
@@ -771,9 +716,9 @@ glBegin(GL_POLYGON); glVertex2f(0.15f,0.11f); glVertex2f(0.18f,0.11f); glVertex2
 glBegin(GL_POLYGON); glVertex2f(0.23f,0.11f); glVertex2f(0.26f,0.11f); glVertex2f(0.26f,0.16f); glVertex2f(0.23f,0.16f); glEnd();
 
 
-// =========================================================
 // BUILDING 7 : FAR RIGHT BIG BUILDING
-// =========================================================
+
+    
 glColor3f(0.58f, 0.60f, 0.64f);
 glBegin(GL_POLYGON);
     glVertex2f(0.72f, 0.00f);
@@ -818,9 +763,10 @@ glBegin(GL_POLYGON); glVertex2f(0.75f,0.06f); glVertex2f(0.78f,0.06f); glVertex2
 glBegin(GL_POLYGON); glVertex2f(0.82f,0.06f); glVertex2f(0.85f,0.06f); glVertex2f(0.85f,0.12f); glVertex2f(0.82f,0.12f); glEnd();
 
 
-// =========================================================
+
 // SMALL STREET TREE IN FRONT OF BUILDINGS
-// =========================================================
+
+    
 glColor3f(0.25f, 0.18f, 0.12f);
 glBegin(GL_POLYGON);
     glVertex2f(0.40f, 0.00f);
@@ -846,15 +792,20 @@ glEnd();
 
 
 
-    // ========== BUILDINGS ==========
+
 
     // ========== GRASS ==========
     glColor3f(0.40f, 0.78f, 0.30f);
     glBegin(GL_POLYGON); glVertex2f(-1.0f,-0.50f); glVertex2f(1.0f,-0.50f); glVertex2f(1.0f,0.0f); glVertex2f(-1.0f,0.0f); glEnd();
 
-    // =============================================
-    // FUEL STATION  ⭐ NEW IN STEP 4
-    // =============================================
+
+
+
+    
+    // FUEL STATION NEW IN STEP 4
+
+
+    
     // Canopy support poles (brown)
     glColor3f(0.40f, 0.28f, 0.18f);
     glBegin(GL_POLYGON); glVertex2f(0.55f,-0.50f); glVertex2f(0.58f,-0.50f); glVertex2f(0.58f,-0.15f); glVertex2f(0.55f,-0.15f); glEnd();
@@ -906,7 +857,7 @@ glEnd();
         glVertex2f(0.76f,-0.25f); glVertex2f(0.73f,-0.25f);
     glEnd();
 
-    // ========== STATION SHOP (orange building, right) ==========
+    //STATION SHOP (orange building, right) 
     glColor3f(1.0f, 0.65f, 0.10f);
     glBegin(GL_POLYGON);
         glVertex2f(0.85f,-0.50f); glVertex2f(1.00f,-0.50f);
@@ -951,28 +902,28 @@ glEnd();
 
 
 
-    // ========== ROAD ==========
+    // ROAD
     glColor3f(0.20f, 0.20f, 0.22f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f,-0.85f); glVertex2f(1.0f,-0.85f);
         glVertex2f(1.0f,-0.50f);  glVertex2f(-1.0f,-0.50f);
     glEnd();
 
-    // ========== GRASS BOTTOM ==========
+    // GRASS BOTTOM 
     glColor3f(0.40f, 0.78f, 0.30f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f,-1.0f);  glVertex2f(1.0f,-1.0f);
         glVertex2f(1.0f,-0.92f);  glVertex2f(-1.0f,-0.92f);
     glEnd();
 
-    // ========== FOOTPATH ==========
+    //  FOOTPATH 
     glColor3f(0.62f, 0.62f, 0.62f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f,-0.92f); glVertex2f(1.0f,-0.92f);
         glVertex2f(1.0f,-0.85f);  glVertex2f(-1.0f,-0.85f);
     glEnd();
 
-    // ========== ROAD MARKINGS ==========
+    //  ROAD MARKINGS 
     glColor3f(1.0f, 0.85f, 0.0f);
     for(dashX = -0.95f; dashX < 1.0f; dashX += 0.20f) {
         glBegin(GL_POLYGON);
@@ -987,7 +938,7 @@ glEnd();
 
 
 
-    // ========== CLOUDS ==========
+    //  CLOUDS 
     glColor3f(1.0f, 1.0f, 1.0f);
     r = 0.06f;
     cy = 0.82f; cx = -0.85f;
@@ -1024,15 +975,15 @@ glEnd();
     glBegin(GL_TRIANGLE_FAN); glVertex2f(cx,cy);
     for(i=0;i<=tringle2;i++) glVertex2f(cx+r*cos(i*tp2/tringle2),cy+r*sin(i*tp2/tringle2)); glEnd();
 
-    // ========== BUILDINGS ==========
+    // BUILDINGS 
 
 
 
-    // ========== GRASS ==========
+    //  GRASS 
     glColor3f(0.40f, 0.78f, 0.30f);
     glBegin(GL_POLYGON); glVertex2f(-1.0f,-0.50f); glVertex2f(1.0f,-0.50f); glVertex2f(1.0f,0.0f); glVertex2f(-1.0f,0.0f); glEnd();
 
-    // ========== FUEL STATION ==========
+    //  FUEL STATION
     glColor3f(0.40f, 0.28f, 0.18f);
     glBegin(GL_POLYGON); glVertex2f(0.55f,-0.50f); glVertex2f(0.58f,-0.50f); glVertex2f(0.58f,-0.15f); glVertex2f(0.55f,-0.15f); glEnd();
     glBegin(GL_POLYGON); glVertex2f(0.78f,-0.50f); glVertex2f(0.81f,-0.50f); glVertex2f(0.81f,-0.15f); glVertex2f(0.78f,-0.15f); glEnd();
@@ -1065,28 +1016,28 @@ glEnd();
     glColor3f(0.40f, 0.25f, 0.15f);
     glBegin(GL_POLYGON); glVertex2f(0.96f,-0.50f); glVertex2f(0.99f,-0.50f); glVertex2f(0.99f,-0.30f); glVertex2f(0.96f,-0.30f); glEnd();
 
-    // ========== ROAD ==========
 
 
 
 
 
 
-    // ========== GRASS BOTTOM ==========
+
+    //  GRASS BOTTOM
     glColor3f(0.40f, 0.78f, 0.30f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f,-1.0f);  glVertex2f(1.0f,-1.0f);
         glVertex2f(1.0f,-0.92f);  glVertex2f(-1.0f,-0.92f);
     glEnd();
 
-    // ========== FOOTPATH ==========
+    //  FOOTPATH 
     glColor3f(0.62f, 0.62f, 0.62f);
     glBegin(GL_POLYGON);
         glVertex2f(-1.0f,-0.92f); glVertex2f(1.0f,-0.92f);
         glVertex2f(1.0f,-0.85f);  glVertex2f(-1.0f,-0.85f);
     glEnd();
 
-    // ========== ROAD MARKINGS ==========
+    // ROAD MARKINGS 
     glColor3f(1.0f, 0.85f, 0.0f);
     for(dashX = -0.95f; dashX < 1.0f; dashX += 0.20f) {
         glBegin(GL_POLYGON);
@@ -1098,14 +1049,13 @@ glEnd();
     }
 
 
-    // =============================================
-    // ⭐ CARS WAITING ON GRASS — fuel queue!
-    // These are parked on grass beside the road
-    // (above the road, on green grass area)
-    // =============================================
-glPushMatrix();                         // ⭐ ADD THIS
+    // CARS WAITING ON GRASS — fuel queue!
+ 
+glPushMatrix();                         
     glTranslatef(queueShift, 0.0f, 0.0f);
-    // ===== WAITING CAR 1 — ORANGE =====
+
+    
+    //  WAITING CAR 1 — ORANGE 
     glColor3f(1.0f, 0.55f, 0.10f);
     glBegin(GL_POLYGON);
         glVertex2f(-0.85f, -0.40f); glVertex2f(-0.70f, -0.40f);
@@ -1128,7 +1078,7 @@ glPushMatrix();                         // ⭐ ADD THIS
     glBegin(GL_TRIANGLE_FAN); glVertex2f(cx, cy);
     for(i=0;i<=tringle2;i++) glVertex2f(cx+r*cos(i*tp2/tringle2), cy+r*sin(i*tp2/tringle2)); glEnd();
 
-    // ===== WAITING CAR 2 — PURPLE =====
+    //  WAITING CAR 2 — PURPLE 
     glColor3f(0.55f, 0.15f, 0.75f);
     glBegin(GL_POLYGON);
         glVertex2f(-0.62f, -0.40f); glVertex2f(-0.47f, -0.40f);
@@ -1247,7 +1197,7 @@ glPushMatrix();                         // ⭐ ADD THIS
       glPopMatrix();
 
 
-  // ========== NO FUEL BOARD ==========
+  // NO FUEL BOARD 
 
   if(timeOfDay < 6.5f || timeOfDay > 17.5f)
     glColor3f(1.0f, 0.95f, 0.45f);
@@ -1286,10 +1236,12 @@ if(timeOfDay < 6.5f || timeOfDay > 17.5f) {
 
 
 
-    // ==============================
+    // 
     // SOFT ROAD REFLECTIONS
     // simple flat polygons on street
-    // ==============================
+
+    
+    // 
     glColor3f(0.55f, 0.48f, 0.22f);
 
     // upper side reflections
@@ -1370,9 +1322,9 @@ glBegin(GL_POLYGON); glVertex2f(0.75f,-0.95f); glVertex2f(0.85f,-0.95f); glVerte
 glBegin(GL_POLYGON); glVertex2f(0.74f,-0.72f); glVertex2f(0.86f,-0.72f); glVertex2f(0.84f,-0.77f); glVertex2f(0.76f,-0.77f); glEnd();
 
 
-// =============================================
+// 
 // LAMP GLASS / BULBS
-// =============================================
+// 
 if(timeOfDay < 6.5f || timeOfDay > 17.5f)
     glColor3f(1.0f, 0.95f, 0.45f);
 else
@@ -1394,9 +1346,9 @@ glBegin(GL_POLYGON); glVertex2f( 0.77f,-0.77f); glVertex2f( 0.83f,-0.77f); glVer
 
 
 
-   // =============================================
-    // ⭐ CARS ON ROAD — each moves independently
-    // =============================================
+
+    // CARS ON ROAD — each moves independently
+
 
 
     // ===== CAR 1 — RED SEDAN (low and sleek) =====
@@ -1714,18 +1666,12 @@ glBegin(GL_POLYGON); glVertex2f( 0.77f,-0.77f); glVertex2f( 0.83f,-0.77f); glVer
 
 
 
-
-
-
-
-
-// =============================================
+    
 // CROWD ON THE GRASS NEAR THE PUMP
 // Paste after pump and grass, before road/cars
-// =============================================
 
 
-// ================= PERSON 1 =================
+//  PERSON 1
 glColor3f(0.84f, 0.64f, 0.45f);   // head
 cx = 0.48f; cy = -0.28f; r = 0.018f;
 glBegin(GL_TRIANGLE_FAN);
@@ -1758,7 +1704,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 
-// ================= PERSON 2 =================
+//  PERSON 2 
 glColor3f(0.80f, 0.58f, 0.40f);
 cx = 0.56f; cy = -0.26f; r = 0.018f;
 glBegin(GL_TRIANGLE_FAN);
@@ -1791,7 +1737,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 
-// ================= PERSON 3 =================
+//  PERSON 3
 glColor3f(0.82f, 0.60f, 0.42f);
 cx = 0.64f; cy = -0.28f; r = 0.018f;
 glBegin(GL_TRIANGLE_FAN);
@@ -1824,7 +1770,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 
-// ================= PERSON 4 =================
+// PERSON 4 
 glColor3f(0.79f, 0.56f, 0.38f);
 cx = 0.73f; cy = -0.27f; r = 0.018f;
 glBegin(GL_TRIANGLE_FAN);
@@ -1857,7 +1803,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 
-// ================= PERSON 5 =================
+// PERSON 5
 glColor3f(0.84f, 0.62f, 0.44f);
 cx = 0.53f; cy = -0.40f; r = 0.017f;
 glBegin(GL_TRIANGLE_FAN);
@@ -1890,7 +1836,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 
-// ================= PERSON 6 =================
+// PERSON 6 
 glColor3f(0.80f, 0.58f, 0.40f);
 cx = 0.67f; cy = -0.41f; r = 0.017f;
 glBegin(GL_TRIANGLE_FAN);
@@ -1923,9 +1869,9 @@ glBegin(GL_POLYGON);
 glEnd();
 
 
-// =============================================
+
 // SMALL FUEL CANS ON THE GRASS
-// =============================================
+
 
 // can 1
 glColor3f(0.82f, 0.08f, 0.08f);
