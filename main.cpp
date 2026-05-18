@@ -100,7 +100,7 @@ if(cloudShift >= 2.0f)
         timeOfDay = timeOfDay + 0.02f;
         if(timeOfDay >= 24.0f) timeOfDay = 0.0f;
 
-        // 5) ⭐ QUEUE shifts slowly forward
+        // 5)QUEUE shifts slowly forward
         queueShift = queueShift + 0.0000f;
         if(queueShift >= 0.18f)
             queueShift = 0.0f;
@@ -1500,7 +1500,7 @@ glBegin(GL_POLYGON); glVertex2f( 0.77f,-0.77f); glVertex2f( 0.83f,-0.77f); glVer
 
 
 
-    // ⭐ CARS ON ROAD
+    // CARS ON ROAD
 
     //  CAR 1
     glPushMatrix();
@@ -1701,6 +1701,9 @@ else
         for(i=0;i<=tringle2;i++) glVertex2f(cx+r*cos(i*tp2/tringle2), cy+r*sin(i*tp2/tringle2)); glEnd();
     glPopMatrix();
 
+
+	
+
     //  CAR 4
     glPushMatrix();
     glTranslatef(car4X, laneLower, 0.0f);
@@ -1710,6 +1713,9 @@ else
             glVertex2f(-0.05f,-0.68f); glVertex2f(0.10f,-0.68f);
             glVertex2f(0.10f,-0.55f); glVertex2f(-0.05f,-0.55f);
         glEnd();
+
+
+	
         // truck cargo box (BIG back)
         glColor3f(0.55f, 0.45f, 0.30f);    // brown cargo
         glBegin(GL_POLYGON);
@@ -1765,6 +1771,10 @@ else
         glBegin(GL_TRIANGLE_FAN); glVertex2f(cx,cy);
         for(i=0;i<=tringle2;i++) glVertex2f(cx+r*cos(i*tp2/tringle2), cy+r*sin(i*tp2/tringle2)); glEnd();
     glPopMatrix();
+
+
+
+	
 
     //  CAR 5
     glPushMatrix();
@@ -1897,6 +1907,10 @@ glBegin(GL_POLYGON);
 glEnd();
 
 
+
+	
+
+
 //  PERSON 3
 glColor3f(0.82f, 0.60f, 0.42f);
 cx = 0.64f; cy = -0.28f; r = 0.018f;
@@ -1929,6 +1943,9 @@ glBegin(GL_POLYGON);
     glVertex2f(0.646f,-0.47f);
 glEnd();
 
+
+
+	
 
 // PERSON 4
 glColor3f(0.79f, 0.56f, 0.38f);
